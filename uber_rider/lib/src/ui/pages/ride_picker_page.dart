@@ -96,7 +96,7 @@ class _RidePickerPageState extends State<RidePickerPage> {
                         Container(
                           width: double.infinity,
                           height: 50,
-                          child: FlatButton(
+                          child: TextButton(
                             onPressed: () {},
                             child: SizedBox(
                               width: double.infinity,

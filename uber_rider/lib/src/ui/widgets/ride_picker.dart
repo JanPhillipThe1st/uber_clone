@@ -28,13 +28,12 @@ class _RidePickerState extends State<RidePicker> {
           Container(
             width: double.infinity,
             height: 50,
-            child: FlatButton(
+            child: TextButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => RidePickerPage(
                             fromAddress == null ? "" : fromAddress.name,
                             (place, isFrom) {
-                              
                           widget.onSelected(place, isFrom);
                           fromAddress = place;
                           setState(() {});
@@ -72,9 +71,15 @@ class _RidePickerState extends State<RidePicker> {
                     Padding(
                       padding: EdgeInsets.only(left: 40.0, right: 50.0),
                       child: Text(
-                        fromAddress == null ? "pickup location" : fromAddress.name,
+                        fromAddress == null
+                            ? "pickup location"
+                            : fromAddress.name,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16, color: fromAddress == null ? Colors.grey : Colors.black),
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: fromAddress == null
+                                ? Colors.grey
+                                : Colors.black),
                       ),
                     )
                   ],
@@ -86,7 +91,7 @@ class _RidePickerState extends State<RidePicker> {
           Container(
             width: double.infinity,
             height: 50,
-            child: FlatButton(
+            child: TextButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
@@ -131,7 +136,10 @@ class _RidePickerState extends State<RidePicker> {
                       child: Text(
                         toAddress == null ? "where to go ?" : toAddress.name,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16, color: toAddress == null ? Colors.grey: Colors.black),
+                        style: TextStyle(
+                            fontSize: 16,
+                            color:
+                                toAddress == null ? Colors.grey : Colors.black),
                       ),
                     )
                   ],

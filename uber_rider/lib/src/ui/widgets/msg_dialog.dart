@@ -8,7 +8,7 @@ class MsgDialog {
               title: Text(title),
               content: Text(msg),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(MsgDialog);
                   },

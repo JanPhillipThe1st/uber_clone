@@ -8,7 +8,7 @@ import 'package:uber_rider/src/ui/pages/login.dart';
 import 'package:uber_rider/src/ui//pages/add_card.dart';
 import 'package:uber_rider/src/ui/pages/payment.dart';
 import 'package:uber_rider/src/ui/pages/select_issue.dart';
-import 'package:uber_rider/src/ui/pages/settings.dart'; 
+import 'package:uber_rider/src/ui/pages/settings.dart';
 import 'package:uber_rider/src/ui/pages/your_trips.dart';
 
 void main() => runApp(MyApp(
@@ -45,6 +45,6 @@ class MyApp extends InheritedWidget {
   }
 
   static MyApp of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(MyApp);
+    return context.dependOnInheritedWidgetOfExactType<MyApp>();
   }
 }

@@ -7,6 +7,7 @@ import 'package:uber_driver/ui/notifications.dart';
 import 'package:uber_driver/ui/profile.dart';
 import 'package:uber_driver/ui/promotions.dart';
 import 'package:uber_driver/ui/recent_transactions.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -14,13 +15,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Uber Clone',
+      title: 'Para Transportation',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => MyHomePage(title: 'Uber Clone'),
+        '/': (context) => MyHomePage(title: 'Para Transportation'),
         '/notifications': (context) => NotificationsPage(),
         '/earnings': (context) => EarningsPage(),
         '/profile': (context) => ProfilePage(),

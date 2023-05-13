@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 AppBar(
                   backgroundColor: Colors.transparent,
                   elevation: 0.0,
-                  leading: FlatButton(
+                  leading: TextButton(
                     onPressed: () {
                       _scaffoldKey.currentState.openDrawer();
                     },
@@ -142,11 +142,11 @@ class _MyHomePageState extends State<MyHomePage> {
       if (mkId == "from_address") {
         _markers[0] = (marker);
         List mmmm = _markers;
-        print(mmmm); 
+        print(mmmm);
       } else if (mkId == "to_address") {
-        _markers.add(marker);  
+        _markers.add(marker);
         List mmmm = _markers;
-        print(mmmm);      
+        print(mmmm);
       }
     });
   }
@@ -165,35 +165,35 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   addPolyline() async {
-      //routes.clear();
-      if (_markers.length > 1) {
-        mapUtil
-            .getRoutePath(
-                LatLng(_markers[0].position.latitude,
-                    _markers[0].position.longitude),
-                LatLng(_markers[1].position.latitude,
-                    _markers[1].position.longitude))
-            .then((locations) {
-          List<LatLng> path = new List();
+    //routes.clear();
+    if (_markers.length > 1) {
+      mapUtil
+          .getRoutePath(
+              LatLng(_markers[0].position.latitude,
+                  _markers[0].position.longitude),
+              LatLng(_markers[1].position.latitude,
+                  _markers[1].position.longitude))
+          .then((locations) {
+        List<LatLng> path = new List();
 
-          locations.forEach((location) {
-            path.add(new LatLng(location.latitude, location.longitude));
-          });
-
-          final Polyline polyline = Polyline(
-            polylineId: PolylineId(_markers[1].position.latitude.toString() +
-                _markers[1].position.longitude.toString()),
-            consumeTapEvents: true,
-            color: Colors.black,
-            width: 2,
-            points: path,
-          );
-
-          setState(() {
-            routes.add(polyline);
-          });
+        locations.forEach((location) {
+          path.add(new LatLng(location.latitude, location.longitude));
         });
-      }
+
+        final Polyline polyline = Polyline(
+          polylineId: PolylineId(_markers[1].position.latitude.toString() +
+              _markers[1].position.longitude.toString()),
+          consumeTapEvents: true,
+          color: Colors.black,
+          width: 2,
+          points: path,
+        );
+
+        setState(() {
+          routes.add(polyline);
+        });
+      });
+    }
   }
 
   initPlatformState() async {

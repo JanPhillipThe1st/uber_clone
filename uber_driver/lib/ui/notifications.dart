@@ -38,7 +38,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                 backgroundColor: Colors.black,
                 leading: GestureDetector(
                   child: IconButton(
-                    onPressed: ()=> Navigator.pop(context),
+                    onPressed: () => Navigator.pop(context),
                     icon: Icon(Icons.close, size: 28, color: Colors.white),
                   ),
                 ),

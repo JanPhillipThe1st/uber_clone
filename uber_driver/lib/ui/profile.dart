@@ -394,7 +394,7 @@ List<Widget> makeContainers(String title) {
                 borderRadius: BorderRadius.all(Radius.circular(50.0)),
               ),
               child: Center(
-                              child: Text("1",
+                child: Text("1",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
