@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:uber_driver/networkUtilTomTom.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -16,6 +17,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   _MyHomePageState();
 
+  NetworkUtil networkUtil = NetworkUtil();
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
   Completer<GoogleMapController> _controller = Completer();
   Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
@@ -68,12 +70,21 @@ class _MyHomePageState extends State<MyHomePage> {
   List<LatLng> polylineCoordinates = [];
   void getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      "AIzaSyD2sbyUn1XI8hitYO1P3Usfrc2tKh1R-U0", // Your Google Map Key
-      PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
-      PointLatLng(destination.latitude, destination.longitude),
-    );
+    PolylineResult result =
+        await NetworkUtilTomTom().getRouteBetweenCoordinates(
+            "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy", // Your Google Map Key
+            PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
+            PointLatLng(destination.latitude, destination.longitude),
+            TravelMode.walking,
+            [],
+            true,
+            false,
+            false,
+            false);
+    // ScaffoldMessenger.of(context)
+    //     .showSnackBar(SnackBar(content: Text(result.points.toString())));
     if (result.points.isNotEmpty) {
+      polylineCoordinates.clear();
       result.points.forEach(
         (PointLatLng point) => polylineCoordinates.add(
           LatLng(point.latitude, point.longitude),
@@ -95,24 +106,25 @@ class _MyHomePageState extends State<MyHomePage> {
     location.onLocationChanged.listen(
       (newLoc) {
         currentLocation = newLoc;
-        googleMapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              zoom: 100,
-              target: LatLng(
-                newLoc.latitude + 0.003,
-                newLoc.longitude + 0.0002,
-              ),
-            ),
-          ),
-        );
+        // googleMapController.animateCamera(
+        //   CameraUpdate.newCameraPosition(
+        //     CameraPosition(
+        //       zoom: 16.8,
+        //       target: LatLng(
+        //         newLoc.latitude,
+        //         newLoc.longitude,
+        //       ),
+        //     ),
+        //   ),
+        // );
         marker = Marker(
             markerId: MarkerId("Driver Location"),
             position: LatLng(
-              newLoc.latitude + 0.003,
-              newLoc.longitude + 0.0002,
+              newLoc.latitude,
+              newLoc.longitude,
             ),
             infoWindow: InfoWindow(title: "Ikaw ni"));
+        getPolyPoints();
         setState(() {});
       },
     );
@@ -120,10 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static final CameraPosition _cameraPosition = CameraPosition(
     target: LatLng(7.829661, 123.434101),
-    zoom: 17.0,
+    zoom: 20.0,
   );
-  static const LatLng sourceLocation = LatLng(7.829661, 123.434101);
-  static const LatLng destination = LatLng(7.818239, 123.408317);
+  static const LatLng sourceLocation = LatLng(7.870260, 123.422367);
+  static LatLng destination = LatLng(8.172000, 123.425264);
   @override
   void initState() {
     //_mapController.mar();
@@ -169,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         children: <Widget>[
           GoogleMap(
-            mapType: MapType.satellite,
+            mapType: MapType.hybrid,
             polylines: {
               Polyline(
                 polylineId: const PolylineId("route"),
@@ -185,19 +197,21 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             markers: {
               Marker(
-                  markerId: MarkerId("House"),
-                  draggable: true,
-                  position: LatLng(7.829661, 123.434101),
-                  infoWindow: InfoWindow(
-                      title: "Jan Phillip (Driver)",
-                      snippet: "The chix magnet")),
-              const Marker(
                 markerId: MarkerId("source"),
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueAzure),
                 position: sourceLocation,
+                onTap: () {},
               ),
-              const Marker(
+              Marker(
+                draggable: true,
                 markerId: MarkerId("destination"),
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueAzure),
                 position: destination,
+                onDrag: (value) {
+                  destination = value;
+                },
               ),
               marker
             },
@@ -255,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -325,8 +339,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ],
         ),
         child: ClipOval(
-          child: Image.network(
-            "https://scontent.fcgy2-2.fna.fbcdn.net/v/t39.30808-6/293981876_715260462896377_6706560643060284185_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=09cbfe&_nc_eui2=AeHjpR2vYwh--7JP8JRR3xXL7qfU_DbFUCXup9T8NsVQJc0PCEntuDHB7rIQkHgq5mNjfT0Fpwt2NsQr3U1bH3Lg&_nc_ohc=MUTjqUiZlPIAX_ZDPG1&_nc_ht=scontent.fcgy2-2.fna&oh=00_AfCck_GM9PNtX4mNP_sjitviAeb86UNJQwVAOABIanPdkQ&oe=6461B9F3",
+          child: Image.asset(
+            "assets/images/user_profile.jpg",
             width: 60,
             height: 60,
             fit: BoxFit.cover,
