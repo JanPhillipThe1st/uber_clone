@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:uber_driver/models/RouteDetails.dart';
 import 'package:uber_driver/networkUtilTomTom.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -23,11 +24,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
   int _polylineIdCounter = 1;
   PolylineId selectedPolyline;
+  RouteDetails routeDetails = RouteDetails();
+  List<String> nearbyPlaces = [];
 
+  NetworkUtilTomTom networkUtilTomTom = NetworkUtilTomTom();
   // Values when toggling polyline color
   int colorsIndex = 0;
   List<Color> colors = <Color>[
-    Colors.purple,
+    Colors.cyan,
     Colors.red,
     Colors.green,
     Colors.pink,
@@ -65,24 +69,24 @@ class _MyHomePageState extends State<MyHomePage> {
     <PatternItem>[PatternItem.dash(30.0), PatternItem.gap(20.0)],
     <PatternItem>[PatternItem.dot, PatternItem.gap(10.0)],
   ];
-
+  List<Map<String, dynamic>> nearbyResult;
   //GoogleMapController _mapController;
   List<LatLng> polylineCoordinates = [];
+  List<LatLng> passengerLocations = [];
+  List<Marker> passengerLocationMarkers = [];
   void getPolyPoints() async {
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result =
-        await NetworkUtilTomTom().getRouteBetweenCoordinates(
-            "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy", // Your Google Map Key
-            PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
-            PointLatLng(destination.latitude, destination.longitude),
-            TravelMode.walking,
-            [],
-            true,
-            false,
-            false,
-            false);
-    // ScaffoldMessenger.of(context)
-    //     .showSnackBar(SnackBar(content: Text(result.points.toString())));
+    PolylineResult result = await networkUtilTomTom.getRouteBetweenCoordinates(
+        "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy", // Your Google Map Key
+        PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
+        PointLatLng(destination.latitude, destination.longitude),
+        TravelMode.walking,
+        [],
+        false,
+        false,
+        false,
+        false);
+    routeDetails = networkUtilTomTom.routeDetails;
+    if (routeDetails != null) {}
     if (result.points.isNotEmpty) {
       polylineCoordinates.clear();
       result.points.forEach(
@@ -90,6 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
           LatLng(point.latitude, point.longitude),
         ),
       );
+
       setState(() {});
     }
   }
@@ -123,8 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
               newLoc.latitude,
               newLoc.longitude,
             ),
-            infoWindow: InfoWindow(title: "Ikaw ni"));
-        getPolyPoints();
+            infoWindow: InfoWindow(title: "Driver"));
         setState(() {});
       },
     );
@@ -134,13 +138,19 @@ class _MyHomePageState extends State<MyHomePage> {
     target: LatLng(7.829661, 123.434101),
     zoom: 20.0,
   );
-  static const LatLng sourceLocation = LatLng(7.870260, 123.422367);
-  static LatLng destination = LatLng(8.172000, 123.425264);
+  static LatLng sourceLocation = LatLng(7.82503, 123.4376);
+  static LatLng destination = LatLng(7.82503, 123.4376);
+  Marker destionationMarker = Marker(
+    draggable: true,
+    markerId: MarkerId("destination"),
+    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+    position: destination,
+  );
   @override
   void initState() {
     //_mapController.mar();
     getPolyPoints();
-    getCurrentLocation();
+    // getCurrentLocation();
     super.initState();
   }
 
@@ -196,21 +206,31 @@ class _MyHomePageState extends State<MyHomePage> {
               //_initCameraPosition();
             },
             markers: {
+              ...passengerLocationMarkers,
               Marker(
                 markerId: MarkerId("source"),
                 icon: BitmapDescriptor.defaultMarkerWithHue(
                     BitmapDescriptor.hueAzure),
                 position: sourceLocation,
-                onTap: () {},
-              ),
-              Marker(
                 draggable: true,
-                markerId: MarkerId("destination"),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueAzure),
-                position: destination,
                 onDrag: (value) {
+                  getPolyPoints();
+                  sourceLocation = value;
+                },
+              ),
+              destionationMarker.copyWith(
+                onDragParam: (value) async {
+                  nearbyPlaces.clear();
+                  getPolyPoints();
                   destination = value;
+                  nearbyResult = await networkUtilTomTom.getNearbyPlaces(
+                      "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy",
+                      PointLatLng(value.latitude, value.longitude));
+                  nearbyResult.forEach((nearbyPlace) {
+                    print(nearbyPlace);
+                    nearbyPlaces.add(nearbyPlace["name"]);
+                  });
+                  setState(() {});
                 },
               ),
               marker
@@ -270,6 +290,62 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
+          Positioned(
+              top: 300,
+              width: 160,
+              height: 120,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            bottomRight: Radius.circular(10)))),
+                child: Column(
+                  children: [
+                    Text(
+                      (routeDetails.lengthInMeters / 1000).toString() +
+                          "km away",
+                    ),
+                    Container(
+                      width: 130,
+                      child: Text("Places Nearby"),
+                    ),
+                    Container(
+                      height: 50,
+                      width: 130,
+                      child: ListView.builder(
+                          itemCount: nearbyPlaces.length,
+                          itemBuilder: (context, index) => Container(
+                                decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shadows: [
+                                      BoxShadow(
+                                        blurRadius: 1,
+                                      )
+                                    ],
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(width: .3),
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                padding: EdgeInsets.symmetric(vertical: 2),
+                                margin: EdgeInsets.symmetric(vertical: 2),
+                                child: TextButton(
+                                  onPressed: () {
+                                    print(nearbyResult[index]);
+                                    // destionationMarker = destionationMarker.copyWith(positionParam: );
+                                  },
+                                  child: Text(
+                                    nearbyPlaces[index],
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )),
+                    )
+                  ],
+                ),
+              ))
         ],
       ),
     );
