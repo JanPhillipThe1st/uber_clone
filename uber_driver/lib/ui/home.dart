@@ -150,6 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
   );
   static LatLng sourceLocation = LatLng(7.82503, 123.4376);
   static LatLng destination = LatLng(7.82503, 123.436);
+  MapType _mapType = MapType.normal;
   Marker destionationMarker = Marker(
     draggable: true,
     markerId: MarkerId("destination"),
@@ -212,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         children: <Widget>[
           GoogleMap(
-            mapType: MapType.normal,
+            mapType: _mapType,
             polylines: {
               Polyline(
                 polylineId: const PolylineId("route"),
@@ -316,6 +317,33 @@ class _MyHomePageState extends State<MyHomePage> {
                       setState(() {});
                     },
                   ),
+                  ToggleButtons(children: [
+                    TextButton(
+                      child: Text("Hybrid"),
+                      onPressed: () {
+                        _mapType = MapType.hybrid;
+                        setState(() {});
+                      },
+                    ),
+                    TextButton(
+                      child: Text("Normal"),
+                      onPressed: () {
+                        _mapType = MapType.normal;
+                        setState(() {});
+                      },
+                    ),
+                    TextButton(
+                      child: Text("Terrain/Satellite"),
+                      onPressed: () {
+                        _mapType = MapType.hybrid;
+                        setState(() {});
+                      },
+                    )
+                  ], isSelected: [
+                    false,
+                    true,
+                    false
+                  ]),
                 ],
               ),
             ),
@@ -494,7 +522,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       setState(() {});
                     },
                   ),
-          )
+          ),
         ],
       ),
     );
