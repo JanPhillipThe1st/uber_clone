@@ -8,17 +8,16 @@ import 'package:http/http.dart' as http;
 
 import 'models/RouteDetails.dart';
 
-class NetworkUtilTomTom extends NetworkUtil {
+class NetworkUtilTomTom {
   static const String STATUS_OK = "ok";
   RouteDetails routeDetails = RouteDetails();
 
-  @override
   Future<PolylineResult> getRouteBetweenCoordinates(
       String tomtomApiKey,
       PointLatLng origin,
       PointLatLng destination,
       TravelMode travelMode,
-      List<PolylineWayPoint> wayPoints,
+      List<LatLng> supportingPoints,
       bool avoidHighways,
       bool avoidTolls,
       bool avoidFerries,
@@ -29,28 +28,42 @@ class NetworkUtilTomTom extends NetworkUtil {
     var params = {
       "key": tomtomApiKey,
       "computeBestOrder": "true",
-      "travelMode": "motorcycle"
+      "travelMode": "motorcycle",
+      "routeType": "shortest"
     };
-    if (wayPoints.isNotEmpty) {
-      List wayPointsArray = [];
-      wayPoints.forEach((point) => wayPointsArray.add(point.location));
-      var wayPointsString = wayPointsArray.join('|');
-      if (optimizeWaypoints) {
-        wayPointsString = 'optimize:true|$wayPointsString';
-      }
-      params.addAll({"waypoints": wayPointsString});
+    String supportingPointsString = "";
+    if (supportingPoints.isNotEmpty) {
+      List supportingPointsArray = [];
+      supportingPointsArray
+          .add(origin.latitude.toString() + "," + origin.longitude.toString());
+      supportingPoints.forEach((element) {
+        supportingPointsArray.add(
+            element.latitude.toString() + "," + element.longitude.toString());
+      });
+      supportingPointsString = supportingPointsArray.join(":");
+      print(supportingPointsString);
     }
-    Uri uri = Uri.https(
-        "api.tomtom.com",
-        "/routing/1/calculateRoute/${origin.latitude},${origin.longitude}:${destination.latitude},${destination.longitude}/json",
-        params);
+    Uri uri = Uri.https("api.tomtom.com",
+        "/routing/1/calculateRoute/${supportingPointsString}/json", params);
 
     var response = await http.get(uri);
+    print(response.request);
     if (response.statusCode == 200) {
       var parsedJson = json.decode(response.body);
       routeDetails =
           RouteDetails().fromJson(parsedJson["routes"][0]["summary"]);
-      List pointLLs = parsedJson["routes"][0]["legs"][0]["points"];
+      List routeList = parsedJson["routes"][0]["legs"];
+      // List pointLLs = parsedJson["routes"][0]["legs"][1]["points"];
+      List pointLLs = [];
+      routeList.forEach((element) {
+        List pointsList = element["points"];
+        pointsList.forEach((points) {
+          pointLLs.add({
+            "latitude": points["latitude"],
+            "longitude": points["longitude"]
+          });
+        });
+      });
       List<PointLatLng> polyLinePoints = [];
       pointLLs.forEach((element) {
         polyLinePoints

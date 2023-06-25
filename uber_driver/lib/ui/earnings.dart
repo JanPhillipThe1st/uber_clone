@@ -47,7 +47,7 @@ class _EarningsViewState extends State<EarningsView> {
                             width: 10,
                           ),
                           IconButton(
-                            onPressed: ()=> Navigator.pop(context),
+                            onPressed: () => Navigator.pop(context),
                             icon: Icon(
                               Icons.keyboard_backspace,
                               color: Colors.white,
@@ -81,7 +81,7 @@ class _EarningsViewState extends State<EarningsView> {
                     height: 14,
                   ),
                   Text(
-                    "\$3.60",
+                    "\₱ 150.60",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 44,
@@ -117,7 +117,7 @@ class _EarningsViewState extends State<EarningsView> {
                             style: TextStyle(fontSize: 20)),
                         subtitle: Container(
                             margin: EdgeInsets.only(top: 10),
-                            child: Text("Sep 17 - Sep 24",
+                            child: Text("Jan 17 - May 30",
                                 style: TextStyle(fontSize: 16))),
                         leading: Container(
                           width: 40,
@@ -144,7 +144,7 @@ class _EarningsViewState extends State<EarningsView> {
                             style: TextStyle(fontSize: 20)),
                         subtitle: Container(
                             margin: EdgeInsets.only(top: 10),
-                            child: Text("\$3.60 balance",
+                            child: Text("\₱ 150.60 balance",
                                 style: TextStyle(fontSize: 16))),
                         leading: Container(
                           width: 40,

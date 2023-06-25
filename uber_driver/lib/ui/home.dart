@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:uber_driver/functions/firestore.dart';
 import 'package:uber_driver/models/RouteDetails.dart';
 import 'package:uber_driver/networkUtilTomTom.dart';
 
@@ -73,14 +74,22 @@ class _MyHomePageState extends State<MyHomePage> {
   //GoogleMapController _mapController;
   List<LatLng> polylineCoordinates = [];
   List<LatLng> passengerLocations = [];
+  bool passengerListExpanded = false;
   List<Marker> passengerLocationMarkers = [];
   void getPolyPoints() async {
+    List<LatLng> supportingPoints = [];
+
+    if (passengerLocationMarkers.isNotEmpty) {
+      passengerLocationMarkers.forEach((element) {
+        supportingPoints.add(element.position);
+      });
+    }
     PolylineResult result = await networkUtilTomTom.getRouteBetweenCoordinates(
         "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy", // Your Google Map Key
         PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
         PointLatLng(destination.latitude, destination.longitude),
         TravelMode.walking,
-        [],
+        supportingPoints,
         false,
         false,
         false,
@@ -100,9 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   LocationData currentLocation;
-  void getCurrentLocation() async {
+  Future<void> getCurrentLocation() async {
     Location location = Location();
-    location.getLocation().then(
+    await location.getLocation().then(
       (location) {
         currentLocation = location;
       },
@@ -110,18 +119,19 @@ class _MyHomePageState extends State<MyHomePage> {
     GoogleMapController googleMapController = await _controller.future;
     location.onLocationChanged.listen(
       (newLoc) {
-        currentLocation = newLoc;
-        // googleMapController.animateCamera(
-        //   CameraUpdate.newCameraPosition(
-        //     CameraPosition(
-        //       zoom: 16.8,
-        //       target: LatLng(
-        //         newLoc.latitude,
-        //         newLoc.longitude,
-        //       ),
-        //     ),
-        //   ),
-        // );
+        // currentLocation = newLoc;
+        sourceLocation = LatLng(newLoc.latitude, newLoc.longitude);
+        googleMapController.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              zoom: 16.8,
+              target: LatLng(
+                newLoc.latitude,
+                newLoc.longitude,
+              ),
+            ),
+          ),
+        );
         marker = Marker(
             markerId: MarkerId("Driver Location"),
             position: LatLng(
@@ -139,21 +149,32 @@ class _MyHomePageState extends State<MyHomePage> {
     zoom: 20.0,
   );
   static LatLng sourceLocation = LatLng(7.82503, 123.4376);
-  static LatLng destination = LatLng(7.82503, 123.4376);
+  static LatLng destination = LatLng(7.82503, 123.436);
   Marker destionationMarker = Marker(
     draggable: true,
     markerId: MarkerId("destination"),
-    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
     position: destination,
   );
   @override
   void initState() {
     //_mapController.mar();
+    getCurrentLocation().then((value) {
+      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+              'lib/assets/driver_icon.png')
+          .then((onValue) {
+        marker = Marker(
+            markerId: MarkerId("Driver Location"),
+            icon: onValue,
+            position:
+                LatLng(sourceLocation.latitude, sourceLocation.longitude));
+      });
+    });
     getPolyPoints();
-    // getCurrentLocation();
     super.initState();
   }
 
+  BitmapDescriptor myIcon;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,7 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         children: <Widget>[
           GoogleMap(
-            mapType: MapType.hybrid,
+            mapType: MapType.normal,
             polylines: {
               Polyline(
                 polylineId: const PolylineId("route"),
@@ -227,7 +248,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy",
                       PointLatLng(value.latitude, value.longitude));
                   nearbyResult.forEach((nearbyPlace) {
-                    print(nearbyPlace);
                     nearbyPlaces.add(nearbyPlace["name"]);
                   });
                   setState(() {});
@@ -251,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () {},
                     ),
                     PriceWidget(
-                      price: "0.00",
+                      price: "100.00",
                       onPressed: () {},
                     ),
                     ProfileWidget(
@@ -264,6 +284,43 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Positioned(
+              child: Container(
+            margin: EdgeInsets.only(bottom: 80),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Row(
+                children: [
+                  TextButton(
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      color: Color.fromARGB(255, 150, 58, 72),
+                      child: Text(
+                        "DELETE MARKERS",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 10, color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () async {
+                      await FirestoreMethods().deletePassengers();
+                      passengerLocationMarkers.clear();
+                      List<Marker> markers =
+                          await FirestoreMethods().getPassengerLocations();
+
+                      passengerLocationMarkers.addAll(markers);
+                      polylineCoordinates.clear();
+                      if (passengerLocationMarkers.isNotEmpty) {
+                        destination = passengerLocationMarkers.last.position;
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Markers deleted successfully.")));
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+            ),
+          )),
+          Positioned(
             child: Container(
               margin: EdgeInsets.only(bottom: 20),
               child: Align(
@@ -272,14 +329,63 @@ class _MyHomePageState extends State<MyHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    FunctionalButton(
-                      icon: Icons.security,
-                      title: "",
-                      onPressed: () {},
+                    // FunctionalButton(
+                    //   icon: Icons.security,
+                    //   title: "",
+                    //   onPressed: () {},
+                    // ),
+                    TextButton(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        color: Color.fromARGB(255, 255, 68, 152),
+                        child: Text(
+                          "MARK",
+                          style: TextStyle(fontSize: 10, color: Colors.white),
+                        ),
+                      ),
+                      onPressed: () {
+                        FirestoreMethods().setDocumentTest(destination);
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Marker added successfully.")));
+                      },
                     ),
-                    GoButton(
-                      title: "GO",
-                      onPressed: () {},
+                    TextButton(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        color: Colors.blueAccent,
+                        child: Text(
+                          "DISPLAY\nPASSENGERS",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 10, color: Colors.white),
+                        ),
+                      ),
+                      onPressed: () async {
+                        List<Marker> markers =
+                            await FirestoreMethods().getPassengerLocations();
+                        passengerLocationMarkers.addAll(markers);
+                        polylineCoordinates.clear();
+                        destination = passengerLocationMarkers.last.position;
+                        setState(() {});
+                      },
+                    ),
+                    TextButton(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        color: Color.fromARGB(255, 75, 150, 58),
+                        child: Text(
+                          "CALCULATE BEST ROUTE",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 10, color: Colors.white),
+                        ),
+                      ),
+                      onPressed: () async {
+                        getPolyPoints();
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Route Calculated.")));
+                        setState(() {});
+                      },
                     ),
                     Container(
                       width: 50,
@@ -291,61 +397,104 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Positioned(
-              top: 300,
-              width: 160,
-              height: 120,
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(10),
-                            bottomRight: Radius.circular(10)))),
-                child: Column(
-                  children: [
-                    Text(
-                      (routeDetails.lengthInMeters / 1000).toString() +
-                          "km away",
+            top: 300,
+            width: passengerListExpanded ? 200 : 50,
+            height: 120,
+            child: passengerListExpanded
+                ? Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                bottomRight: Radius.circular(10)))),
+                    child: Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              (routeDetails.lengthInMeters / 1000).toString() +
+                                  "km away",
+                            ),
+                            Container(
+                              child: Text("Passenger Ranking"),
+                            ),
+                            Container(
+                              height: 50,
+                              width: 130,
+                              child: ListView.builder(
+                                  itemCount: passengerLocationMarkers.length,
+                                  itemBuilder: (context, index) => Container(
+                                        decoration: ShapeDecoration(
+                                            color: Colors.white,
+                                            shadows: [
+                                              BoxShadow(
+                                                blurRadius: 1,
+                                              )
+                                            ],
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide(width: .3),
+                                                borderRadius:
+                                                    BorderRadius.circular(5))),
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 2),
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 2),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            // destionationMarker = destionationMarker.copyWith(positionParam: );
+                                          },
+                                          child: Text(
+                                            // nearbyPlaces[index],
+                                            passengerLocationMarkers[index]
+                                                .position
+                                                .toString(),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      )),
+                            )
+                          ],
+                        ),
+                        IconButton(
+                          splashRadius: 100,
+                          icon: Icon(
+                            Icons.arrow_circle_left_outlined,
+                            size: 50,
+                            color: Colors.blueGrey,
+                          ),
+                          onPressed: () {
+                            print(passengerListExpanded);
+                            if (!passengerListExpanded) {
+                              passengerListExpanded = true;
+                            } else {
+                              passengerListExpanded = false;
+                            }
+                            setState(() {});
+                          },
+                        ),
+                      ],
                     ),
-                    Container(
-                      width: 130,
-                      child: Text("Places Nearby"),
+                  )
+                : IconButton(
+                    splashRadius: 400,
+                    icon: Icon(
+                      Icons.arrow_circle_right_outlined,
+                      size: 50,
+                      color: Colors.blueGrey,
                     ),
-                    Container(
-                      height: 50,
-                      width: 130,
-                      child: ListView.builder(
-                          itemCount: nearbyPlaces.length,
-                          itemBuilder: (context, index) => Container(
-                                decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shadows: [
-                                      BoxShadow(
-                                        blurRadius: 1,
-                                      )
-                                    ],
-                                    shape: RoundedRectangleBorder(
-                                        side: BorderSide(width: .3),
-                                        borderRadius:
-                                            BorderRadius.circular(5))),
-                                padding: EdgeInsets.symmetric(vertical: 2),
-                                margin: EdgeInsets.symmetric(vertical: 2),
-                                child: TextButton(
-                                  onPressed: () {
-                                    print(nearbyResult[index]);
-                                    // destionationMarker = destionationMarker.copyWith(positionParam: );
-                                  },
-                                  child: Text(
-                                    nearbyPlaces[index],
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              )),
-                    )
-                  ],
-                ),
-              ))
+                    onPressed: () {
+                      print(passengerListExpanded);
+                      if (!passengerListExpanded) {
+                        passengerListExpanded = true;
+                      } else {
+                        passengerListExpanded = false;
+                      }
+                      setState(() {});
+                    },
+                  ),
+          )
         ],
       ),
     );
@@ -456,7 +605,7 @@ class _PriceWidgetState extends State<PriceWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("\$",
+          Text("\₱ ",
               style: TextStyle(
                   color: Colors.green,
                   fontSize: 26,

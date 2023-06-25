@@ -22,11 +22,14 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
+  assets_path_resolver: ^0.0.1
   cloud_firestore: ^4.7.1
+  firebase_core: ^2.13.0
   flutter_polyline_points: ^1.0.0
   flutter_test:
     sdk: flutter
   google_maps_flutter: ^2.2.6
+  liquid_progress_indicator: ^0.4.0
   location: ^4.4.0
 
 # For information on the generic Dart part of this file, see the
@@ -42,6 +45,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - lib/assets/driver_icon.png
+    - lib/assets/hero.png
   #  - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
@@ -52,6 +57,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: lib/assets/fonts/Poppins-Regular.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

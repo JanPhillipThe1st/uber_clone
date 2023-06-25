@@ -60,7 +60,7 @@ class _ProfileViewState extends State<ProfileView> {
                             onPressed: () =>
                                 Navigator.pushNamed(context, "/profile"),
                             icon: Icons.star,
-                            name: "Márcio",
+                            name: "Jan Phillip",
                             rating: "4.88",
                           ),
                         ),
@@ -174,7 +174,7 @@ class _ProfileViewState extends State<ProfileView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          "Compliements",
+                          "Compliments",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 22,

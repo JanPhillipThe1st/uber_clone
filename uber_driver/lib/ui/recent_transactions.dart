@@ -53,7 +53,7 @@ class _RecentTransactionsViewState extends State<RecentTransactionsView> {
                       height: 10,
                     ),
                     Text(
-                      "\$3.60",
+                      "\₱ 150.60",
                       style: TextStyle(
                         fontSize: 34,
                       ),
@@ -78,7 +78,7 @@ class _RecentTransactionsViewState extends State<RecentTransactionsView> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Icon(
-                                Icons.attach_money,
+                                Icons.money,
                                 color: Colors.white,
                                 size: 40,
                               ),
@@ -92,7 +92,7 @@ class _RecentTransactionsViewState extends State<RecentTransactionsView> {
                       height: 10,
                     ),
                     Text(
-                      "PAYMENT SCHEDULED: 9/24",
+                      "PAYMENT SCHEDULED: 6/01/2023",
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.grey,
@@ -118,20 +118,40 @@ class _RecentTransactionsViewState extends State<RecentTransactionsView> {
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 children: <Widget>[
-                  SizedBox(height: 30,),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("UberX", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
-                      Text("\$3.60", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+                      Text(
+                        "Bajaj",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "\₱ 150.60",
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text("Sep 19, 10:13 PM", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),),
-                      Text("\$3.60", style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),),
+                      Text(
+                        "May 31, 10:00 AM",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.normal),
+                      ),
+                      Text(
+                        "\₱ 150.60",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.normal),
+                      ),
                     ],
                   ),
                 ],
