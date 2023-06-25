@@ -10,6 +10,7 @@ import 'package:uber_driver/ui/promotions.dart';
 import 'package:uber_driver/ui/recent_transactions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:uber_driver/ui/registration_page.dart';
+import 'package:uber_driver/ui/upload_photo.dart';
 
 void main() => runApp(MyApp());
 

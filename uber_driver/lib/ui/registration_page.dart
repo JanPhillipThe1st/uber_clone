@@ -1,8 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:uber_driver/ui/upload_photo.dart';
 import 'package:uber_driver/utils/app_info.dart';
 import 'package:uber_driver/widgets/default_text.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_android/image_picker_android.dart';
 import 'package:uber_driver/widgets/default_text_field.dart';
 
 import '../widgets/registration_input.dart';
@@ -109,7 +112,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50))),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            PickedFile file = await ImagePickerAndroid()
+                                .pickImage(source: ImageSource.gallery);
+                            setState(() {});
+                            if (file == null) {
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>  UploadPhoto(
+                                        photo_name: "Valid ID",
+                                        photo_file: file),
+                                  ));
+                            }
+                          },
                           tooltip: "Valid ID",
                           icon: Icon(
                             Icons.picture_in_picture_outlined,

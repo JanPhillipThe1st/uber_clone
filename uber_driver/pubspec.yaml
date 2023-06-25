@@ -23,12 +23,16 @@ dependencies:
 
 dev_dependencies:
   assets_path_resolver: ^0.0.1
+  async: ^2.10.0
   cloud_firestore: ^4.7.1
   firebase_core: ^2.13.0
+  flutter_photo_view: ^1.0.3
   flutter_polyline_points: ^1.0.0
   flutter_test:
     sdk: flutter
   google_maps_flutter: ^2.2.6
+  flutter_photo_editor: ^0.0.3
+  image_picker: ^0.8.9
   liquid_progress_indicator: ^0.4.0
   location: ^4.4.0
 
