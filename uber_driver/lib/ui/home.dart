@@ -8,7 +8,7 @@ import 'package:uber_driver/models/RouteDetails.dart';
 import 'package:uber_driver/networkUtilTomTom.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -24,7 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Completer<GoogleMapController> _controller = Completer();
   Map<PolylineId, Polyline> polylines = <PolylineId, Polyline>{};
   int _polylineIdCounter = 1;
-  PolylineId selectedPolyline;
+  PolylineId? selectedPolyline;
   RouteDetails routeDetails = RouteDetails();
   List<String> nearbyPlaces = [];
 
@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
     <PatternItem>[PatternItem.dash(30.0), PatternItem.gap(20.0)],
     <PatternItem>[PatternItem.dot, PatternItem.gap(10.0)],
   ];
-  List<Map<String, dynamic>> nearbyResult;
+  List<Map<String, dynamic>>? nearbyResult;
   //GoogleMapController _mapController;
   List<LatLng> polylineCoordinates = [];
   List<LatLng> passengerLocations = [];
@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
     PolylineResult result = await networkUtilTomTom.getRouteBetweenCoordinates(
-        "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy", // Your Google Map Key
+        "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy",
         PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
         PointLatLng(destination.latitude, destination.longitude),
         TravelMode.walking,
@@ -108,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  LocationData currentLocation;
+  LocationData? currentLocation;
   Future<void> getCurrentLocation() async {
     Location location = Location();
     await location.getLocation().then(
@@ -120,14 +120,14 @@ class _MyHomePageState extends State<MyHomePage> {
     location.onLocationChanged.listen(
       (newLoc) {
         // currentLocation = newLoc;
-        sourceLocation = LatLng(newLoc.latitude, newLoc.longitude);
+        sourceLocation = LatLng(newLoc.latitude!, newLoc.longitude!);
         googleMapController.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
               zoom: 16.8,
               target: LatLng(
-                newLoc.latitude,
-                newLoc.longitude,
+                newLoc.latitude!,
+                newLoc.longitude!,
               ),
             ),
           ),
@@ -135,8 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
         marker = Marker(
             markerId: MarkerId("Driver Location"),
             position: LatLng(
-              newLoc.latitude,
-              newLoc.longitude,
+              newLoc.latitude!,
+              newLoc.longitude!,
             ),
             infoWindow: InfoWindow(title: "Driver"));
         setState(() {});
@@ -175,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  BitmapDescriptor myIcon;
+  BitmapDescriptor? myIcon;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -248,7 +248,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   nearbyResult = await networkUtilTomTom.getNearbyPlaces(
                       "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy",
                       PointLatLng(value.latitude, value.longitude));
-                  nearbyResult.forEach((nearbyPlace) {
+                  nearbyResult!.forEach((nearbyPlace) {
                     nearbyPlaces.add(nearbyPlace["name"]);
                   });
                   setState(() {});
@@ -534,7 +534,8 @@ class FunctionalButton extends StatefulWidget {
   final IconData icon;
   final Function() onPressed;
 
-  const FunctionalButton({Key key, this.title, this.icon, this.onPressed})
+  const FunctionalButton(
+      {key, required this.title, required this.icon, required this.onPressed})
       : super(key: key);
 
   @override
@@ -571,7 +572,7 @@ class _FunctionalButtonState extends State<FunctionalButton> {
 class ProfileWidget extends StatefulWidget {
   final Function() onPressed;
 
-  const ProfileWidget({Key key, this.onPressed}) : super(key: key);
+  const ProfileWidget({key, required this.onPressed}) : super(key: key);
 
   @override
   _ProfileWidgetState createState() => _ProfileWidgetState();
@@ -608,7 +609,8 @@ class PriceWidget extends StatefulWidget {
   final String price;
   final Function() onPressed;
 
-  const PriceWidget({Key key, this.price, this.onPressed}) : super(key: key);
+  const PriceWidget({key, required this.price, required this.onPressed})
+      : super(key: key);
 
   @override
   _PriceWidgetState createState() => _PriceWidgetState();
@@ -653,7 +655,8 @@ class GoButton extends StatefulWidget {
   final String title;
   final Function() onPressed;
 
-  const GoButton({Key key, this.title, this.onPressed}) : super(key: key);
+  const GoButton({key, required this.title, required this.onPressed})
+      : super(key: key);
 
   @override
   _GoButtonState createState() => _GoButtonState();

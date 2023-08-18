@@ -14,27 +14,29 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.12.2 <3.0.0"
 
 dependencies:
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.5
   flutter:
     sdk: flutter
 
 dev_dependencies:
-  assets_path_resolver: ^0.0.1
   async: ^2.10.0
-  cloud_firestore: ^4.7.1
-  firebase_core: ^2.13.0
+  cloud_firestore: ^4.8.4
+  firebase_core: ^2.15.0
+  firebase_storage: ^11.2.5
+  flutter_photo_editor: ^0.0.3
   flutter_photo_view: ^1.0.3
   flutter_polyline_points: ^1.0.0
   flutter_test:
     sdk: flutter
-  google_maps_flutter: ^2.2.6
-  flutter_photo_editor: ^0.0.3
-  image_picker: ^0.8.9
+  google_maps_flutter: ^2.3.0
+  image_picker: ^1.0.2
   liquid_progress_indicator: ^0.4.0
-  location: ^4.4.0
+  location: ^5.0.3
+dependency_overrides:
+  firebase_core_platform_interface: 4.5.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

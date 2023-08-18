@@ -5,7 +5,7 @@ import 'package:flutter_photo_editor/flutter_photo_editor.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 
 class UploadPhoto extends StatefulWidget {
-  const UploadPhoto({Key key, this.photo_name, this.photo_file});
+  const UploadPhoto({key, required this.photo_name, required this.photo_file});
   final String photo_name;
   final PickedFile photo_file;
   @override
@@ -13,7 +13,7 @@ class UploadPhoto extends StatefulWidget {
 }
 
 class _UploadPhotoState extends State<UploadPhoto> {
-  Image imageWidget;
+  Image? imageWidget;
   @override
   void initState() {
     // TODO: implement initState
@@ -54,7 +54,7 @@ class _UploadPhotoState extends State<UploadPhoto> {
                     Positioned(
                       child: imageWidget == null
                           ? Text("Loading Image...")
-                          : imageWidget,
+                          : imageWidget!,
                     ),
                     Positioned(
                       top: 10,
@@ -152,7 +152,9 @@ class _UploadPhotoState extends State<UploadPhoto> {
                     child: IconButton(
                         splashRadius: 200,
                         color: Color.fromARGB(198, 23, 69, 97),
-                        onPressed: () async {},
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
                         icon: Icon(Icons.check)),
                   ),
                 ],

@@ -7,6 +7,78 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:402617973882:android:6239045f7dbdc0db44cfc3",
+        "android_client_info": {
+          "package_name": "com.example.uber_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "402617973882-krj5ebicnq8vi66n7crlem3kqbovljq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3AFEl6TfjeVffU456i1IAxmYehNcUgL8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "402617973882-krj5ebicnq8vi66n7crlem3kqbovljq3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "402617973882-un0862hbaidoomd7llu7ibgsi2p7jtrl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yamatoApps.paraAdmin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402617973882:android:6352a1912f838f2044cfc3",
+        "android_client_info": {
+          "package_name": "com.yamatoApps.para_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "402617973882-krj5ebicnq8vi66n7crlem3kqbovljq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3AFEl6TfjeVffU456i1IAxmYehNcUgL8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "402617973882-krj5ebicnq8vi66n7crlem3kqbovljq3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "402617973882-un0862hbaidoomd7llu7ibgsi2p7jtrl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yamatoApps.paraAdmin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:402617973882:android:1c83108363b23b8244cfc3",
         "android_client_info": {
           "package_name": "com.yamatoApps.para_transpo"
@@ -29,6 +101,49 @@
             {
               "client_id": "402617973882-krj5ebicnq8vi66n7crlem3kqbovljq3.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "402617973882-un0862hbaidoomd7llu7ibgsi2p7jtrl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yamatoApps.paraAdmin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402617973882:android:4e12e8f2928cc56344cfc3",
+        "android_client_info": {
+          "package_name": "com.yamatoApss.para_transpo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "402617973882-krj5ebicnq8vi66n7crlem3kqbovljq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3AFEl6TfjeVffU456i1IAxmYehNcUgL8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "402617973882-krj5ebicnq8vi66n7crlem3kqbovljq3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "402617973882-un0862hbaidoomd7llu7ibgsi2p7jtrl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yamatoApps.paraAdmin"
+              }
             }
           ]
         }

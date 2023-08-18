@@ -7,20 +7,38 @@ import 'package:uber_driver/widgets/default_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_android/image_picker_android.dart';
 import 'package:uber_driver/widgets/default_text_field.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../widgets/registration_input.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key key});
+  const RegistrationPage({key});
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
 }
 
+Map<String, PickedFile> photos = new Map<String, PickedFile>();
+Map<String, dynamic> photoURLs = new Map<String, dynamic>();
+FirebaseFirestore _firestore = FirebaseFirestore.instance;
+FirebaseStorage _storageBucket =
+    FirebaseStorage.instanceFor(bucket: "gs://para-transportation.appspot.com");
+TextEditingController firstNameController = TextEditingController();
+TextEditingController lastNameController = TextEditingController();
+TextEditingController barangayController = TextEditingController();
+TextEditingController purokController = TextEditingController();
+TextEditingController houseNumberController = TextEditingController();
+TextEditingController contactPersonController = TextEditingController();
+TextEditingController contactPersonNumberController = TextEditingController();
+bool _isLoading = false;
+
 class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     //Registration Page covers the users' personal information input
+
     return Scaffold(
       appBar: AppBar(
         actions: [],
@@ -74,24 +92,31 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   RegistrationInput(
                     hintText: "First Name:",
+                    controller: firstNameController,
                   ),
                   RegistrationInput(
                     hintText: "Last Name:",
+                    controller: lastNameController,
                   ),
                   RegistrationInput(
                     hintText: "Barangay:",
+                    controller: barangayController,
                   ),
                   RegistrationInput(
                     hintText: "Purok:",
+                    controller: purokController,
                   ),
                   RegistrationInput(
                     hintText: "House number\n(optional):",
+                    controller: houseNumberController,
                   ),
                   RegistrationInput(
                     hintText: "Contact Person:",
+                    controller: contactPersonController,
                   ),
                   RegistrationInput(
                     hintText: "Contact Person\nNumber:",
+                    controller: contactPersonNumberController,
                   ),
                   Padding(padding: EdgeInsets.symmetric(vertical: 5)),
                   Row(
@@ -113,15 +138,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                 borderRadius: BorderRadius.circular(50))),
                         child: IconButton(
                           onPressed: () async {
-                            PickedFile file = await ImagePickerAndroid()
+                            PickedFile? file = await ImagePickerAndroid()
                                 .pickImage(source: ImageSource.gallery);
+                            photos["valid_id"] = file!;
                             setState(() {});
                             if (file == null) {
                             } else {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>  UploadPhoto(
+                                    builder: (context) => UploadPhoto(
                                         photo_name: "Valid ID",
                                         photo_file: file),
                                   ));
@@ -151,7 +177,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                 borderRadius: BorderRadius.circular(50))),
                         child: IconButton(
                           tooltip: "Selfie",
-                          onPressed: () {},
+                          onPressed: () async {
+                            PickedFile? file = await ImagePickerAndroid()
+                                .pickImage(source: ImageSource.gallery);
+                            photos["selfie"] = file!;
+                            setState(() {});
+                            if (file == null) {
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UploadPhoto(
+                                        photo_name: "Selfie", photo_file: file),
+                                  ));
+                            }
+                          },
                           icon: Icon(
                             Icons.camera,
                           ),
@@ -175,7 +215,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                 borderRadius: BorderRadius.circular(50))),
                         child: IconButton(
                           tooltip: "Franchise",
-                          onPressed: () {},
+                          onPressed: () async {
+                            PickedFile? file = await ImagePickerAndroid()
+                                .pickImage(source: ImageSource.gallery);
+                            photos["franchise"] = file!;
+                            setState(() {});
+                            if (file == null) {
+                            } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UploadPhoto(
+                                        photo_name: "Franchise ID",
+                                        photo_file: file),
+                                  ));
+                            }
+                          },
                           icon: Icon(
                             Icons.verified_outlined,
                           ),
@@ -185,7 +240,90 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ),
                     ],
                   ),
-                  Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 5)),
+                  Expanded(
+                      child: TextButton(
+                    onPressed: () async {
+                      _isLoading = true;
+                      setState(() {});
+                      await _storageBucket
+                          .ref("User Photos")
+                          .child("Valid ID")
+                          .putData(await photos["valid_id"]!.readAsBytes());
+                      _storageBucket
+                          .ref("User Photos")
+                          .child("Valid ID")
+                          .getDownloadURL()
+                          .then((value) {
+                        photoURLs["valid_id"] = value;
+                      });
+                      await _storageBucket
+                          .ref("User Photos")
+                          .child("Selfie")
+                          .putData(await photos["selfie"]!.readAsBytes());
+                      _storageBucket
+                          .ref("User Photos")
+                          .child("Selfie")
+                          .getDownloadURL()
+                          .then((value) {
+                        photoURLs["selfie"] = value;
+                      });
+                      await _storageBucket
+                          .ref("User Photos")
+                          .child("Franchise")
+                          .putData(await photos["franchise"]!.readAsBytes());
+                      _storageBucket
+                          .ref("User Photos")
+                          .child("Franchise")
+                          .getDownloadURL()
+                          .then((value) {
+                        photoURLs["franchise"] = value;
+                      });
+                      photoURLs["first_name"] = firstNameController.text;
+                      photoURLs["last_name"] = lastNameController.text;
+                      photoURLs["barangay"] = barangayController.text;
+                      photoURLs["purok"] = purokController.text;
+                      photoURLs["house_number"] = houseNumberController.text;
+                      photoURLs["contact_person"] =
+                          contactPersonController.text;
+                      photoURLs["contact_person_number"] =
+                          contactPersonNumberController.text;
+                      _firestore.collection("Drivers").add(photoURLs);
+                      _isLoading = false;
+                      setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Photos Successfully Uploaded!")));
+                    },
+                    child: Container(
+                      decoration: ShapeDecoration(
+                          color: Color.fromARGB(255, 20, 178, 110),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30))),
+                      width: double.maxFinite,
+                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                      child: _isLoading
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Done",
+                                  style: defaultStyle.copyWith(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Icon(
+                                  Icons.check,
+                                  color: defaultStyle.color,
+                                )
+                              ],
+                            ),
+                    ),
+                  ))
                 ],
               ))
         ],

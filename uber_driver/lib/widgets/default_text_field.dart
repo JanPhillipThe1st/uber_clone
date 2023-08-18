@@ -4,7 +4,7 @@ import '../utils/app_info.dart';
 
 class DefaultTextField extends StatefulWidget {
   const DefaultTextField(
-      {Key key, this.hint, this.controller, this.obscure, this.color});
+      {key, this.hint, required this.controller, required this.obscure, required this.color});
   final hint;
   final bool obscure;
   final Color color;

@@ -15,7 +15,7 @@ class ProfileView extends StatefulWidget {
 const kExpandedHeight = 300.0;
 
 class _ProfileViewState extends State<ProfileView> {
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
   @override
   void initState() {
@@ -204,7 +204,8 @@ class FunctionalButton extends StatefulWidget {
   final IconData icon;
   final Function() onPressed;
 
-  const FunctionalButton({Key key, this.title, this.icon, this.onPressed})
+  const FunctionalButton(
+      {key, required this.title, required this.icon, required this.onPressed})
       : super(key: key);
 
   @override
@@ -257,7 +258,11 @@ class ProfileWidget extends StatefulWidget {
   final Function() onPressed;
 
   const ProfileWidget(
-      {Key key, this.name, this.rating, this.icon, this.onPressed})
+      {key,
+      required this.name,
+      required this.rating,
+      required this.icon,
+      required this.onPressed})
       : super(key: key);
 
   @override

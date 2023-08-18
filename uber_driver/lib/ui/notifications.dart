@@ -15,7 +15,7 @@ class NotificationsView extends StatefulWidget {
 const kExpandedHeight = 300.0;
 
 class _NotificationsViewState extends State<NotificationsView> {
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
   @override
   void initState() {
@@ -265,7 +265,8 @@ class FunctionalButton extends StatefulWidget {
   final IconData icon;
   final Function() onPressed;
 
-  const FunctionalButton({Key key, this.title, this.icon, this.onPressed})
+  const FunctionalButton(
+      {key, required this.title, required this.icon, required this.onPressed})
       : super(key: key);
 
   @override
@@ -318,7 +319,11 @@ class ProfileButton extends StatefulWidget {
   final Function() onPressed;
 
   const ProfileButton(
-      {Key key, this.title, this.rating, this.icon, this.onPressed})
+      {key,
+      required this.title,
+      required this.rating,
+      required this.icon,
+      required this.onPressed})
       : super(key: key);
 
   @override

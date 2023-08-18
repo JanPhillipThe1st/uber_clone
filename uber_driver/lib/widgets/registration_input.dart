@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'default_text_field.dart';
 
 class RegistrationInput extends StatefulWidget {
-  const RegistrationInput({Key key, this.hintText, this.controller});
+  const RegistrationInput({ key, required this.hintText, required this.controller});
 
   final String hintText;
   final TextEditingController controller;

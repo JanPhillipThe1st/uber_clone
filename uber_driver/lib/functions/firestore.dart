@@ -12,12 +12,15 @@ class FirestoreMethods {
       "location": {"lat": location.latitude, "long": location.longitude},
     });
   }
-  void deletePassengers() {
-    db.collection('passengers').get().then((snapshot) {
-  for (DocumentSnapshot ds in snapshot.docs){
-    ds.reference.delete();
-  };
-});;
+
+  Future<void> deletePassengers() async {
+    await db.collection('passengers').get().then((snapshot) async {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        await ds.reference.delete();
+      }
+      ;
+    });
+    ;
   }
 
   Future<List<Marker>> getPassengerLocations() async {

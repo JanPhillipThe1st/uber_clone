@@ -5,7 +5,7 @@ import '../widgets/default_text.dart';
 import '../widgets/default_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key key});
+  const LoginScreen({key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();

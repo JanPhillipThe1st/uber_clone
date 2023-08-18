@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/app_info.dart';
 
 class DefaultText extends StatefulWidget {
-  const DefaultText({Key key, this.text, this.width});
+  const DefaultText({ key, this.text, required this.width});
   final text;
   final double width;
   @override
