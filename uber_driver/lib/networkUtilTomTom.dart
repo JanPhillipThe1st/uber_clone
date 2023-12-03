@@ -80,13 +80,29 @@ class NetworkUtilTomTom {
     return result;
   }
 
+  // Future<String> getPassengerLandmark(double lat, double lon) async {
+  //   String result = "";
+  //   await http
+  //       .get(TomTomRequestData(lat: lat, lon: lon).buildNetworkRequest())
+  //       .then((http.Response response) {
+  //     print(response.body);
+  //     Map<String, dynamic> jsonResult = jsonDecode(response.body);
+  //     result = jsonResult["results"][0]["poi"]["name"] +
+  //         ", " +
+  //         jsonResult["results"][0]["address"]["streetName"] +
+  //         ", " +
+  //         jsonResult["results"][0]["address"]["municipalitySubdivision"];
+  //   });
+  //   return result;
+  // }
+
   Future<List<Map<String, dynamic>>> getNearbyPlaces(
     String tomtomApiKey,
     PointLatLng location,
   ) async {
     List<Map<String, dynamic>> nearbyPlaces = [];
     var params = {
-      "key": tomtomApiKey,
+      "key": "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy",
       "lat": location.latitude.toString(),
       "lon": location.longitude.toString()
     };
@@ -103,5 +119,17 @@ class NetworkUtilTomTom {
       } else {}
     }
     return nearbyPlaces;
+  }
+}
+
+class TomTomRequestData {
+  double? lat = 0.0;
+  double? lon = 0.0;
+  String? tomTomHost = "https://api.tomtom.com/search/2/nearbySearch/.json?";
+  TomTomRequestData({this.lat, this.lon});
+
+  Uri buildNetworkRequest() {
+    return Uri.parse(tomTomHost! +
+        "key=OvlYvFPqknOFMPZTSf0KjTqYTaVD4f9F&lat=$lat&lon=$lon&limit=1");
   }
 }

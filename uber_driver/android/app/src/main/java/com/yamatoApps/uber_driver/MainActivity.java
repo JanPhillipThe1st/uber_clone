@@ -1,4 +1,4 @@
-package com.yamatoApps.para_transpo;
+package com.yamatoApps.uber_driver;
 
 import io.flutter.embedding.android.FlutterActivity;
 

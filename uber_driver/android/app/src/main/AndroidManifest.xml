@@ -1,8 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.yamatoApps.para_transpo">
-      <!-- Always include this permission -->
+    package="com.yamatoApps.uber_driver">
+      <!-- Alwaycom.yamatoApps.uber_drivers include this permission -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+  <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.INTERNET" />
+ <uses-permission android:name="android.permission.WAKE_LOCK" />
+ <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
   <!-- Include only if your app benefits from precise location access. -->
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -11,7 +19,9 @@
    
         android:label="Para Transportation"
         android:name="${applicationName}"
-        android:icon="@mipmap/para_logo">
+        android:icon="@mipmap/para_logo"
+        android:usesCleartextTraffic="true"
+        >
              <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyD7gjSeyUE7X9j0j_M4Us918wzxrXw9Mk0"/>
         <activity
@@ -21,6 +31,7 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
+            
             android:windowSoftInputMode="adjustResize">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
@@ -30,7 +41,8 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-         
+          <meta-data android:name="io.flutter.network-policy"
+              android:resource="@xml/network_security_config"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

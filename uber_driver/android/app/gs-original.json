@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "402617973882",
+    "project_id": "para-transportation",
+    "storage_bucket": "para-transportation.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402617973882:android:aa31d2459e50faa244cfc3",
+        "android_client_info": {
+          "package_name": "com.yamatoApps.para_passenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "402617973882-0ktav1pi8ttvvnufqecjbic85hmtndu4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3AFEl6TfjeVffU456i1IAxmYehNcUgL8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "402617973882-0ktav1pi8ttvvnufqecjbic85hmtndu4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "402617973882-un0862hbaidoomd7llu7ibgsi2p7jtrl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yamatoApps.paraAdmin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

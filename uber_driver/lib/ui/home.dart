@@ -84,54 +84,60 @@ class _MyHomePageState extends State<MyHomePage> {
         supportingPoints.add(element.position);
       });
     }
-    PolylineResult result = await networkUtilTomTom.getRouteBetweenCoordinates(
-        "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy",
-        PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
-        PointLatLng(destination.latitude, destination.longitude),
-        TravelMode.walking,
-        supportingPoints,
-        false,
-        false,
-        false,
-        false);
-    routeDetails = networkUtilTomTom.routeDetails;
-    if (routeDetails != null) {}
-    if (result.points.isNotEmpty) {
-      polylineCoordinates.clear();
-      result.points.forEach(
-        (PointLatLng point) => polylineCoordinates.add(
-          LatLng(point.latitude, point.longitude),
-        ),
-      );
+    PolylineResult result;
+    if (supportingPoints.isNotEmpty) {
+      PolylineResult result =
+          await networkUtilTomTom.getRouteBetweenCoordinates(
+              "TNrPv6isrGooVIYCXns3WcJRtjhNAZpy",
+              PointLatLng(sourceLocation.latitude, sourceLocation.longitude),
+              PointLatLng(destination.latitude, destination.longitude),
+              TravelMode.walking,
+              supportingPoints,
+              false,
+              false,
+              false,
+              false);
+      if (routeDetails != null) {}
+      if (result.points.isNotEmpty) {
+        polylineCoordinates.clear();
+        result.points.forEach(
+          (PointLatLng point) => polylineCoordinates.add(
+            LatLng(point.latitude, point.longitude),
+          ),
+        );
 
-      setState(() {});
+        setState(() {});
+      }
     }
+    routeDetails = networkUtilTomTom.routeDetails;
   }
 
   LocationData? currentLocation;
   Future<void> getCurrentLocation() async {
+    GoogleMapController googleMapController = await _controller.future;
     Location location = Location();
     await location.getLocation().then(
       (location) {
         currentLocation = location;
-      },
-    );
-    GoogleMapController googleMapController = await _controller.future;
-    location.onLocationChanged.listen(
-      (newLoc) {
-        // currentLocation = newLoc;
-        sourceLocation = LatLng(newLoc.latitude!, newLoc.longitude!);
         googleMapController.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
               zoom: 16.8,
               target: LatLng(
-                newLoc.latitude!,
-                newLoc.longitude!,
+                currentLocation!.latitude!,
+                currentLocation!.longitude!,
               ),
             ),
           ),
         );
+      },
+    );
+
+    location.onLocationChanged.listen(
+      (newLoc) {
+        // currentLocation = newLoc;
+        sourceLocation = LatLng(newLoc.latitude!, newLoc.longitude!);
+
         marker = Marker(
             markerId: MarkerId("Driver Location"),
             position: LatLng(
@@ -304,10 +310,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () async {
                       await FirestoreMethods().deletePassengers();
                       passengerLocationMarkers.clear();
-                      List<Marker> markers =
-                          await FirestoreMethods().getPassengerLocations();
+                      // List<Marker> markers =
+                      //     await FirestoreMethods().getPassengerLocations();
 
-                      passengerLocationMarkers.addAll(markers);
+                      // passengerLocationMarkers.addAll(markers);
                       polylineCoordinates.clear();
                       if (passengerLocationMarkers.isNotEmpty) {
                         destination = passengerLocationMarkers.last.position;
@@ -372,8 +378,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       onPressed: () {
-                        FirestoreMethods().setDocumentTest(destination);
-
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text("Marker added successfully.")));
                       },
@@ -389,9 +393,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       onPressed: () async {
-                        List<Marker> markers =
-                            await FirestoreMethods().getPassengerLocations();
-                        passengerLocationMarkers.addAll(markers);
+                        // List<Marker> markers =
+                        //     await FirestoreMethods().getPassengerLocations();
+                        // passengerLocationMarkers.addAll(markers);
                         polylineCoordinates.clear();
                         destination = passengerLocationMarkers.last.position;
                         setState(() {});

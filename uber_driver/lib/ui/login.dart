@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:uber_driver/functions/firestore.dart';
 
 import '../utils/app_info.dart';
 import '../widgets/default_text.dart';
 import '../widgets/default_text_field.dart';
+import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({key});
@@ -58,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           hint: "Password",
                           color: Colors.white,
                           controller: password_controller,
-                          obscure: false),
+                          obscure: true),
                       Padding(padding: EdgeInsets.symmetric(vertical: 20)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -82,8 +84,42 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: EdgeInsets.all(2),
                             child: TextButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, "/search_passengers");
+                                  FirestoreMethods()
+                                      .login(
+                                          username: username_controller.text,
+                                          password: password_controller.text)
+                                      .then((value) {
+                                    if (value["username"] != null) {
+                                      Navigator.pushNamed(
+                                          context, "/view_ride_requests");
+                                    } else {
+                                      showDialog<String>(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                                title:
+                                                    const Text('Login Failed'),
+                                                content: const Text(
+                                                    'Your account does not exist yet.'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            context, 'Cancel'),
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            context, 'OK'),
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ],
+                                              )).then((value) {
+                                        print(value);
+                                      });
+                                    }
+                                  });
                                 },
                                 child: Container(
                                   width: 300,
